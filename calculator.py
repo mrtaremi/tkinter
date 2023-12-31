@@ -1,69 +1,67 @@
 import tkinter as tk
-from math import sin, cos, tan, log, pow, radians
+from math import sin, cos, tan, log
 
-class EngineeringCalculator:
+class Calculator:
     def __init__(self, master):
+        # تنظیمات اولیه و ایجاد پنجره
         self.master = master
-        master.title("Engineering Calculator")
+        master.title("Simple Calculator")
 
-        # Entry widget to display the current expression
-        self.display_entry = tk.Entry(master, width=30, font=('Arial', 14))
-        self.display_entry.grid(row=0, column=0, columnspan=4, pady=10)
+        # ایجاد ویجت ورودی متن
+        self.entry = tk.Entry(master, width=20, borderwidth=5)
+        self.entry.grid(row=0, column=0, columnspan=4, padx=10, pady=10)
 
-        # Define buttons
+        # دکمه‌های ماشین حساب
         buttons = [
-            ('7', 1, 0), ('8', 1, 1), ('9', 1, 2), ('/', 1, 3),
-            ('4', 2, 0), ('5', 2, 1), ('6', 2, 2), ('*', 2, 3),
-            ('1', 3, 0), ('2', 3, 1), ('3', 3, 2), ('-', 3, 3),
-            ('0', 4, 0), ('.', 4, 1), ('=', 4, 2), ('+', 4, 3),
-            ('sin', 5, 0), ('cos', 5, 1), ('tan', 5, 2), ('^', 5, 3),
-            ('log', 6, 0), ('C', 6, 1), ('(', 6, 2), (')', 6, 3),
+            '7', '8', '9', '/',
+            '4', '5', '6', '*',
+            '1', '2', '3', '-',
+            '0', 'sin', 'cos', '+',
+            'tan', 'log', '^', '=',
+            'C'  # دکمه پاکسازی
         ]
 
-        # Create and place buttons
-        for (text, row, col) in buttons:
-            button = tk.Button(master, text=text, width=5, height=2, command=lambda t=text: self.button_click(t))
-            button.grid(row=row, column=col, padx=5, pady=5)
+        row_val = 1
+        col_val = 0
 
-    def button_click(self, value):
-        current_expression = self.display_entry.get()
+        # ایجاد دکمه‌ها در شبکه
+        for button in buttons:
+            tk.Button(master, text=button, width=5, command=lambda b=button: self.handle_button(b)).grid(row=row_val, column=col_val)
+            col_val += 1
+            if col_val > 3:
+                col_val = 0
+                row_val += 1
 
-        if value == "=":
+    def handle_button(self, value):
+        # دریافت محتوای فعلی ورودی
+        current = self.entry.get()
+
+        if value == '=':
+            # بستن پرانتزها اگر تعداد بازپرانتزها بیشتر از بسته‌ها باشد
+            if '(' in current and current.count('(') > current.count(')'):
+                self.entry.insert(tk.END, ')' * (current.count('(') - current.count(')')))
             try:
-                result = eval(current_expression)
-                self.display_entry.delete(0, tk.END)
-                self.display_entry.insert(tk.END, str(result))
+                # محاسبه نتیجه و نمایش آن
+                result = eval(current)
+                self.entry.delete(0, tk.END)
+                self.entry.insert(tk.END, str(result))
             except Exception as e:
-                self.display_entry.delete(0, tk.END)
-                self.display_entry.insert(tk.END, "Error")
-
-        elif value == "C":
-            self.display_entry.delete(0, tk.END)
-
+                # نمایش خطا در صورت وجود مشکل
+                self.entry.delete(0, tk.END)
+                self.entry.insert(tk.END, "Error")
+        elif value in ('sin', 'cos', 'tan', 'log', '^'):
+            # جایگزینی محتوای ورودی با نام تابع
+            self.entry.delete(0, tk.END)
+            self.entry.insert(tk.END, f"{value}(")
+        elif value == 'C':
+            # پاکسازی محتوای ورودی
+            self.entry.delete(0, tk.END)
         else:
-            current_expression += value
-            self.display_entry.delete(0, tk.END)
-            self.display_entry.insert(tk.END, current_expression)
-
-        if value in ['sin', 'cos', 'tan', 'log', '^']:
-            self.perform_math_operation(value)
-
-    def perform_math_operation(self, operation):
-        try:
-            current_expression = self.display_entry.get()
-            if operation == '^':
-                operation = '**'
-            elif operation == 'log':
-                operation = 'log10'
-
-            result = eval(f'{operation}({current_expression})')
-            self.display_entry.delete(0, tk.END)
-            self.display_entry.insert(tk.END, result)
-        except Exception as e:
-            self.display_entry.delete(0, tk.END)
-            self.display_entry.insert(tk.END, "Error")
+            # اضافه کردن مقدار دکمه به ورودی
+            self.entry.insert(tk.END, value)
 
 if __name__ == "__main__":
+    # اجرای برنامه
     root = tk.Tk()
-    calculator = EngineeringCalculator(root)
+    calculator = Calculator(root)
     root.mainloop()
