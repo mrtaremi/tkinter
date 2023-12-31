@@ -17,3 +17,27 @@ CREATE TABLE IF NOT EXISTS sales
                                     title TEXT,
                                     quantity INTEGER,
                                     sale_date TEXT)
+
+
+
+
+
+
+
+
+CREATE TABLE `books` (
+  `id` int(11) NOT NULL,
+  `title` varchar(255) NOT NULL,
+  `author` varchar(255) NOT NULL,
+  `price` decimal(10,2) NOT NULL,
+  `quantity` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+
+
+CREATE TABLE `sales` (
+  `id` int(11) NOT NULL,
+  `title` varchar(255) NOT NULL,
+  `quantity` int(11) NOT NULL,
+  `sale_date` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
