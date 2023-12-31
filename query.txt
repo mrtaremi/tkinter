@@ -1,0 +1,19 @@
+CREATE TABLE IF NOT EXISTS books
+                                   (id INTEGER PRIMARY KEY AUTOINCREMENT,
+                                    title TEXT,
+                                    author TEXT,
+                                    price REAL,
+                                    quantity INTEGER)
+
+
+
+
+
+
+
+
+CREATE TABLE IF NOT EXISTS sales
+                                   (id INTEGER PRIMARY KEY AUTOINCREMENT,
+                                    title TEXT,
+                                    quantity INTEGER,
+                                    sale_date TEXT)
